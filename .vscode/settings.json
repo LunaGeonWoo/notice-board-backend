@@ -6,5 +6,6 @@
       "args": ["-NoExit", "-Command", ".\\.venv\\Scripts\\activate"]
     }
   },
-  "terminal.integrated.defaultProfile.windows": "PowerShell"
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "cSpell.words": ["extrapretty"]
 }
