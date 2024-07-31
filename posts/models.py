@@ -58,3 +58,7 @@ class Reply(CommonModel):
 
     def __str__(self) -> str:
         return f"{self.comment}/{self.writer}의 답글"
+
+    class Meta:
+        verbose_name = "reply"
+        verbose_name_plural = "replies"

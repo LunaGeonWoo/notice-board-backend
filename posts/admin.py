@@ -14,5 +14,4 @@ class CommentAdmin(admin.ModelAdmin):
 
 @admin.register(Reply)
 class ReplyAdmin(admin.ModelAdmin):
-    class Meta:
-        verbose_name_plural = "Replies"
+    pass
