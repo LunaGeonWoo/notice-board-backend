@@ -5,6 +5,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
     UserManager,
 )
+from common.models import CommonModel
 
 
 class CustomUserManager(BaseUserManager):
@@ -33,7 +34,7 @@ class CustomUserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, CommonModel, PermissionsMixin):
     objects = CustomUserManager()
 
     username = models.CharField(
@@ -51,8 +52,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = "username"
     EMAIL_FIELD = "email"
