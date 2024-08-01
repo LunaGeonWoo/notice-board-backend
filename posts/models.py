@@ -71,6 +71,10 @@ class Comment(CommonModel):
         on_delete=models.CASCADE,
         verbose_name="작성자",
     )
+    is_modified = models.BooleanField(
+        default=False,
+        editable=False,
+    )
 
     def __str__(self) -> str:
         return f"{self.post}/{self.writer}의 댓글"
