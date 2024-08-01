@@ -23,11 +23,13 @@ class Post(CommonModel):
     modified_at = models.DateTimeField(default=now)
     likes = models.ManyToManyField(
         User,
+        blank=True,
         related_name="liked_posts",
         verbose_name="좋아요",
     )
     dislikes = models.ManyToManyField(
         User,
+        blank=True,
         related_name="disliked_posts",
         verbose_name="싫어요",
     )
