@@ -28,13 +28,25 @@ class PostListAPIView(APIView):
 class PostDetailAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def get_object(self, id):
+    def get_object(self, pk):
         try:
-            return Post.objects.get(id=id)
+            return Post.objects.get(pk=pk)
         except Post.DoesNotExist:
             raise exceptions.NotFound
 
-    def get(self, request, id):
-        post = self.get_object(id)
+    def get(self, request, pk):
+        post = self.get_object(pk)
         serializer = PostDetailSerializer(post)
         return Response(serializer.data)
+
+    def put(self, request, pk):
+        post = self.get_object(pk=pk)
+        if post.writer != request.user:
+            raise exceptions.PermissionDenied
+        serializer = PostCreateSerializer(post, data=request.data)
+        if serializer.is_valid():
+            post = serializer.save()
+            serializer = PostDetailSerializer(post)
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

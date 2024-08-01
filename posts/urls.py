@@ -3,5 +3,5 @@ from .views import PostListAPIView, PostDetailAPIView
 
 urlpatterns = [
     path("", PostListAPIView.as_view()),
-    path("<int:id>/", PostDetailAPIView.as_view()),
+    path("<int:pk>/", PostDetailAPIView.as_view()),
 ]
