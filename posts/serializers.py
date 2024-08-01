@@ -5,7 +5,6 @@ from users.serializers import UserTinySerializer
 
 class PostListSerializer(serializers.ModelSerializer):
     writer = UserTinySerializer()
-    likes_count = serializers.IntegerField(source="likes_count", read_only=True)
 
     class Meta:
         model = Post
@@ -14,8 +13,8 @@ class PostListSerializer(serializers.ModelSerializer):
             "writer",
             "title",
             "views",
-            "created_at",
             "likes_count",
+            "created_at",
         ]
 
 

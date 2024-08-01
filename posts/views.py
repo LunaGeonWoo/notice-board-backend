@@ -72,8 +72,21 @@ class PostLikeAPIView(APIView):
 
     def post(self, request, pk):
         post = self.get_object(pk=pk)
+        if post.is_like(request.user):
+            return Response({"detail": "Already liked."})
+
+        if post.is_dislike(request.user):
+            post.remove_dislike(request.user)
         post.add_like(request.user)
         return Response({"detail": "Liked."})
+
+    def delete(self, request, pk):
+        post = self.get_object(pk=pk)
+        if post.is_like(request.user):
+            post.remove_like(request.user)
+            return Response({"detail": "Like removed."})
+        else:
+            return Response({"detail": "You have not liked this post."})
 
 
 class PostDislikeAPIView(APIView):
@@ -87,5 +100,18 @@ class PostDislikeAPIView(APIView):
 
     def post(self, request, pk):
         post = self.get_object(pk=pk)
+        if post.is_dislike(request.user):
+            return Response({"detail": "Already disliked."})
+
+        if post.is_like(request.user):
+            post.remove_like(request.user)
         post.add_dislike(request.user)
         return Response({"detail": "Disliked."})
+
+    def delete(self, request, pk):
+        post = self.get_object(pk=pk)
+        if post.is_dislike(request.user):
+            post.remove_dislike(request.user)
+            return Response({"detail": "Dislike removed."})
+        else:
+            return Response({"detail": "You have not disliked this post."})

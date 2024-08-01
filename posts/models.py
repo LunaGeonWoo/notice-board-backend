@@ -29,24 +29,34 @@ class Post(CommonModel):
         verbose_name="싫어요",
     )
 
-    def __str__(self) -> str:
-        return self.title
-
-    def add_like(self, user):
-        if self.dislikes.filter(id=user.id).exists():
-            self.dislikes.remove(user)
-        self.likes.add(user)
-        self.save()
-
-    def add_dislike(self, user):
-        if self.likes.filter(id=user.id).exists():
-            self.likes.remove(user)
-        self.dislikes.add(user)
-        self.save()
-
     @property
     def likes_count(self):
         return self.likes.count()
+
+    def __str__(self) -> str:
+        return self.title
+
+    def is_like(self, user):
+        return self.likes.filter(id=user.id).exists()
+
+    def add_like(self, user):
+        self.likes.add(user)
+        self.save()
+
+    def remove_like(self, user):
+        self.likes.remove(user)
+        self.save()
+
+    def is_dislike(self, user):
+        return self.dislikes.filter(id=user.id).exists()
+
+    def add_dislike(self, user):
+        self.dislikes.add(user)
+        self.save()
+
+    def remove_dislike(self, user):
+        self.dislikes.remove(user)
+        self.save()
 
 
 class Comment(CommonModel):
