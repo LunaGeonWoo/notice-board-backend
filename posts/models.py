@@ -18,17 +18,33 @@ class Post(CommonModel):
         default=0,
         verbose_name="조회수",
     )
-    like = models.PositiveIntegerField(
-        default=0,
+    likes = models.ManyToManyField(
+        User,
+        related_name="liked_posts",
         verbose_name="좋아요",
     )
-    dislike = models.PositiveIntegerField(
-        default=0,
+    dislikes = models.ManyToManyField(
+        User,
+        related_name="disliked_posts",
         verbose_name="싫어요",
     )
 
     def __str__(self) -> str:
         return self.title
+
+    def add_like(self, user):
+        if user in self.dislikes.all():
+            self.dislikes.remove(user)
+        self.likes.add(user)
+
+    def add_dislike(self, user):
+        if user in self.likes.all():
+            self.likes.remove(user)
+        self.dislikes.add(user)
+
+    @property
+    def likes_count(self):
+        return self.likes.count()
 
 
 class Comment(CommonModel):
