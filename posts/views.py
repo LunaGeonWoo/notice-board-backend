@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import exceptions
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .serializers import PostListSerializer, PostCreateSerializer, PostDetailSerializer
 from .models import Post
 
@@ -59,3 +59,33 @@ class PostDetailAPIView(APIView):
             raise exceptions.PermissionDenied
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class PostLikeAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, pk):
+        try:
+            return Post.objects.get(pk=pk)
+        except Post.DoesNotExist:
+            raise exceptions.NotFound
+
+    def post(self, request, pk):
+        post = self.get_object(pk=pk)
+        post.add_like(request.user)
+        return Response({"detail": "Liked."})
+
+
+class PostDislikeAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, pk):
+        try:
+            return Post.objects.get(pk=pk)
+        except Post.DoesNotExist:
+            raise exceptions.NotFound
+
+    def post(self, request, pk):
+        post = self.get_object(pk=pk)
+        post.add_dislike(request.user)
+        return Response({"detail": "Disliked."})
