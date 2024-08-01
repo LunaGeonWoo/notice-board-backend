@@ -1,6 +1,7 @@
 from django.db import models
 from common.models import CommonModel
 from users.models import User
+from django.utils.timezone import now
 
 
 class Post(CommonModel):
@@ -18,6 +19,8 @@ class Post(CommonModel):
         default=0,
         verbose_name="조회수",
     )
+    is_modified = models.BooleanField(default=False)
+    modified_at = models.DateTimeField(default=now)
     likes = models.ManyToManyField(
         User,
         related_name="liked_posts",

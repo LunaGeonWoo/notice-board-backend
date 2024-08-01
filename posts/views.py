@@ -1,4 +1,4 @@
-from django.db.models import F
+from django.utils.timezone import now
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -19,9 +19,8 @@ class PostListAPIView(APIView):
     def post(self, request):
         serializer = PostCreateSerializer(data=request.data)
         if serializer.is_valid():
-            post = serializer.save(writer=request.user)
-            serializer = PostCreateSerializer(post)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            serializer.save(writer=request.user)
+            return Response(status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -37,7 +36,8 @@ class PostDetailAPIView(APIView):
 
     def get(self, request, pk):
         post = self.get_object(pk)
-        Post.objects.filter(pk=pk).update(views=F("views") + 1)
+        post.views += 1
+        post.save()
         serializer = PostDetailSerializer(post)
         return Response(serializer.data)
 
@@ -47,7 +47,7 @@ class PostDetailAPIView(APIView):
             raise exceptions.PermissionDenied
         serializer = PostCreateSerializer(post, data=request.data)
         if serializer.is_valid():
-            post = serializer.save()
+            post = serializer.save(is_modified=True, modified_at=now())
             serializer = PostDetailSerializer(post)
             return Response(serializer.data)
         else:
@@ -73,20 +73,27 @@ class PostLikeAPIView(APIView):
     def post(self, request, pk):
         post = self.get_object(pk=pk)
         if post.is_like(request.user):
-            return Response({"detail": "Already liked."})
+            return Response(
+                {"detail": "Already liked."}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         if post.is_dislike(request.user):
             post.remove_dislike(request.user)
         post.add_like(request.user)
-        return Response({"detail": "Liked."})
+        return Response({"detail": "Liked."}, status=status.HTTP_201_CREATED)
 
     def delete(self, request, pk):
         post = self.get_object(pk=pk)
         if post.is_like(request.user):
             post.remove_like(request.user)
-            return Response({"detail": "Like removed."})
+            return Response(
+                {"detail": "Like removed."}, status=status.HTTP_204_NO_CONTENT
+            )
         else:
-            return Response({"detail": "You have not liked this post."})
+            return Response(
+                {"detail": "You have not liked this post."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class PostDislikeAPIView(APIView):
@@ -101,17 +108,24 @@ class PostDislikeAPIView(APIView):
     def post(self, request, pk):
         post = self.get_object(pk=pk)
         if post.is_dislike(request.user):
-            return Response({"detail": "Already disliked."})
+            return Response(
+                {"detail": "Already disliked."}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         if post.is_like(request.user):
             post.remove_like(request.user)
         post.add_dislike(request.user)
-        return Response({"detail": "Disliked."})
+        return Response({"detail": "Disliked."}, status=status.HTTP_201_CREATED)
 
     def delete(self, request, pk):
         post = self.get_object(pk=pk)
         if post.is_dislike(request.user):
             post.remove_dislike(request.user)
-            return Response({"detail": "Dislike removed."})
+            return Response(
+                {"detail": "Dislike removed."}, status=status.HTTP_204_NO_CONTENT
+            )
         else:
-            return Response({"detail": "You have not disliked this post."})
+            return Response(
+                {"detail": "You have not disliked this post."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
