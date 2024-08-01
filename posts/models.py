@@ -33,14 +33,16 @@ class Post(CommonModel):
         return self.title
 
     def add_like(self, user):
-        if user in self.dislikes.all():
+        if self.dislikes.filter(id=user.id).exists():
             self.dislikes.remove(user)
         self.likes.add(user)
+        self.save()
 
     def add_dislike(self, user):
-        if user in self.likes.all():
+        if self.likes.filter(id=user.id).exists():
             self.likes.remove(user)
         self.dislikes.add(user)
+        self.save()
 
     @property
     def likes_count(self):
