@@ -12,6 +12,8 @@ class PostListSerializer(serializers.ModelSerializer):
             "id",
             "writer",
             "title",
+            "views",
+            "like",
             "created_at",
         ]
 

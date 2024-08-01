@@ -36,6 +36,8 @@ class PostDetailAPIView(APIView):
 
     def get(self, request, pk):
         post = self.get_object(pk)
+        post.views += 1
+        post.save()
         serializer = PostDetailSerializer(post)
         return Response(serializer.data)
 
