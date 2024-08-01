@@ -38,7 +38,7 @@ class PostDetailAPIView(APIView):
         post = self.get_object(pk)
         post.views += 1
         post.save()
-        serializer = PostDetailSerializer(post)
+        serializer = PostDetailSerializer(post, context={"request": request})
         return Response(serializer.data)
 
     def put(self, request, pk):
