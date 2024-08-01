@@ -1,3 +1,4 @@
+from django.db.models import F
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -36,8 +37,7 @@ class PostDetailAPIView(APIView):
 
     def get(self, request, pk):
         post = self.get_object(pk)
-        post.views += 1
-        post.save()
+        Post.objects.filter(pk=pk).update(views=F("views") + 1)
         serializer = PostDetailSerializer(post)
         return Response(serializer.data)
 

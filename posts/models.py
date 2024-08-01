@@ -29,10 +29,6 @@ class Post(CommonModel):
         verbose_name="싫어요",
     )
 
-    @property
-    def likes_count(self):
-        return self.likes.count()
-
     def __str__(self) -> str:
         return self.title
 

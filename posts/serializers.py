@@ -5,6 +5,7 @@ from users.serializers import UserTinySerializer
 
 class PostListSerializer(serializers.ModelSerializer):
     writer = UserTinySerializer()
+    likes_count = serializers.IntegerField(source="likes.count", read_only=True)
 
     class Meta:
         model = Post
@@ -20,10 +21,12 @@ class PostListSerializer(serializers.ModelSerializer):
 
 class PostDetailSerializer(serializers.ModelSerializer):
     writer = UserTinySerializer()
+    likes_count = serializers.IntegerField(source="likes.count", read_only=True)
+    dislikes_count = serializers.IntegerField(source="dislikes.count", read_only=True)
 
     class Meta:
         model = Post
-        fields = "__all__"
+        exclude = ["likes", "dislikes"]
 
 
 class PostCreateSerializer(serializers.ModelSerializer):
