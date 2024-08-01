@@ -14,6 +14,10 @@ class Post(CommonModel):
         on_delete=models.CASCADE,
         verbose_name="작성자",
     )
+    views = models.PositiveIntegerField(
+        default=0,
+        verbose_name="조회수",
+    )
     like = models.PositiveIntegerField(
         default=0,
         verbose_name="좋아요",
