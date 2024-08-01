@@ -16,6 +16,14 @@ class PostListSerializer(serializers.ModelSerializer):
         ]
 
 
+class PostDetailSerializer(serializers.ModelSerializer):
+    writer = UserTinySerializer()
+
+    class Meta:
+        model = Post
+        fields = "__all__"
+
+
 class PostCreateSerializer(serializers.ModelSerializer):
     writer = UserTinySerializer(read_only=True)
 
