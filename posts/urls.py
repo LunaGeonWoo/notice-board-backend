@@ -6,6 +6,7 @@ from .views import (
     PostDislikeAPIView,
     CommentAPIView,
     CommentModifyAPIView,
+    ReplyAPIView,
 )
 
 urlpatterns = [
@@ -15,4 +16,5 @@ urlpatterns = [
     path("<int:pk>/dislike/", PostDislikeAPIView.as_view()),
     path("<int:pk>/comments/", CommentAPIView.as_view()),
     path("<int:pk>/comments/<int:comment_pk>", CommentModifyAPIView.as_view()),
+    path("<int:pk>/comments/<int:comment_pk>/replies", ReplyAPIView.as_view()),
 ]

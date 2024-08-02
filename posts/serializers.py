@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post, Comment
+from .models import Post, Comment, Reply
 from users.serializers import UserTinySerializer
 
 
@@ -57,4 +57,14 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         exclude = [
             "post",
+        ]
+
+
+class ReplySerializer(serializers.ModelSerializer):
+    writer = UserTinySerializer(read_only=True)
+
+    class Meta:
+        model = Reply
+        exclude = [
+            "comment",
         ]

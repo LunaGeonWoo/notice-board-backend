@@ -92,6 +92,10 @@ class Reply(CommonModel):
         verbose_name="작성자",
     )
     detail = models.TextField()
+    is_modified = models.BooleanField(
+        default=False,
+        editable=False,
+    )
 
     def __str__(self) -> str:
         return f"{self.comment}/{self.writer}의 답글"

@@ -9,8 +9,9 @@ from .serializers import (
     PostCreateSerializer,
     PostDetailSerializer,
     CommentSerializer,
+    ReplySerializer,
 )
-from .models import Post, Comment
+from .models import Post, Comment, Reply
 
 
 class PostListAPIView(APIView):
@@ -168,5 +169,22 @@ class CommentModifyAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ReplyAPIView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get(self, request, pk, comment_pk):
+        replies = Reply.objects.filter(comment_id=comment_pk)
+        serializer = ReplySerializer(replies, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, pk, comment_pk):
+        serializer = ReplySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(comment_id=comment_pk, writer=request.user)
+            return Response(status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
