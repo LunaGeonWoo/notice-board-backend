@@ -47,7 +47,6 @@ class User(AbstractBaseUser, CommonModel, PermissionsMixin):
         verbose_name="이름",
     )
     email = models.EmailField(
-        blank=True,
         verbose_name="이메일",
     )
     is_active = models.BooleanField(default=True)
