@@ -172,6 +172,16 @@ class CommentModifyAPIView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def delete(self, request, pk, comment_pk):
+        comment = self.get_object(comment_pk)
+        if comment.writer != request.user:
+            raise exceptions.PermissionDenied
+        comment.delete()
+        return Response(
+            {"detail": "Comment deleted successfully."},
+            status=status.HTTP_204_NO_CONTENT,
+        )
+
 
 class ReplyAPIView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
