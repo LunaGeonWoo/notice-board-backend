@@ -23,7 +23,10 @@ class UserApiView(APIView):
             serializer = UserPrivateSerializer(user)
             return Response(serializer.data)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class MeApiView(APIView):
@@ -45,7 +48,26 @@ class MeApiView(APIView):
             serializer.save()
             return Response(serializer.data)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    def delete(self, request):
+        user = request.user
+        password = request.data.get("password")
+
+        if not user.check_password(password):
+            return Response(
+                {"detail": "Password is incorrect."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user.delete()
+        return Response(
+            {"detail": "User deleted successfully."},
+            status=status.HTTP_204_NO_CONTENT,
+        )
 
 
 class ChangePasswordApiView(generics.UpdateAPIView):
@@ -70,7 +92,11 @@ class ChangePasswordApiView(generics.UpdateAPIView):
             self.object.set_password(serializer.data.get("new_password"))
             self.object.save()
             return Response(
-                {"detail": "Password updated successfully."}, status=status.HTTP_200_OK
+                {"detail": "Password updated successfully."},
+                status=status.HTTP_200_OK,
             )
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST,
+        )
