@@ -23,3 +23,8 @@ class UserPrivateSerializer(serializers.ModelSerializer):
             "groups",
             "user_permissions",
         )
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
