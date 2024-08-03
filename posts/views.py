@@ -217,3 +217,13 @@ class ReplyModifyAPIView(APIView):
             return Response(status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, comment_pk, reply_pk):
+        reply = self.get_object(reply_pk)
+        if reply.writer != request.user:
+            raise exceptions.PermissionDenied
+        reply.delete()
+        return Response(
+            {"detail": "Comment deleted successfully."},
+            status=status.HTTP_204_NO_CONTENT,
+        )
