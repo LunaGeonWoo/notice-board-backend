@@ -37,6 +37,12 @@ class Post(CommonModel):
     def __str__(self) -> str:
         return self.title
 
+    def get_num_of_reactions(self):
+        reactions = self.comments.count()
+        for comment in self.comments.all():
+            reactions += comment.replies.count()
+        return reactions
+
     def is_like(self, user):
         return self.likes.filter(id=user.id).exists()
 
@@ -64,6 +70,7 @@ class Comment(CommonModel):
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
+        related_name="comments",
     )
     detail = models.TextField()
     writer = models.ForeignKey(
@@ -85,6 +92,7 @@ class Reply(CommonModel):
         Comment,
         on_delete=models.CASCADE,
         verbose_name="답글",
+        related_name="replies",
     )
     writer = models.ForeignKey(
         User,

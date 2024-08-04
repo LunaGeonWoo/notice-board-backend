@@ -6,17 +6,22 @@ from users.serializers import UserTinySerializer
 class PostListSerializer(serializers.ModelSerializer):
     writer = UserTinySerializer()
     likes_count = serializers.IntegerField(source="likes.count", read_only=True)
+    num_of_reactions = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = [
             "id",
-            "writer",
             "title",
+            "writer",
             "views",
             "likes_count",
+            "num_of_reactions",
             "created_at",
         ]
+
+    def get_num_of_reactions(self, post):
+        return post.get_num_of_reactions()
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
