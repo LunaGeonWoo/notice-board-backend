@@ -31,6 +31,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
     is_like = serializers.SerializerMethodField()
     is_dislike = serializers.SerializerMethodField()
     num_of_reactions = serializers.SerializerMethodField()
+    is_mine = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -44,6 +45,9 @@ class PostDetailSerializer(serializers.ModelSerializer):
 
     def get_num_of_reactions(self, post):
         return post.get_num_of_reactions()
+
+    def get_is_mine(self, post):
+        return post.writer == self.context["request"].user
 
 
 class PostCreateSerializer(serializers.ModelSerializer):
