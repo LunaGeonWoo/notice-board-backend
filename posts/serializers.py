@@ -30,6 +30,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
     dislikes_count = serializers.IntegerField(source="dislikes.count", read_only=True)
     is_like = serializers.SerializerMethodField()
     is_dislike = serializers.SerializerMethodField()
+    num_of_reactions = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -40,6 +41,9 @@ class PostDetailSerializer(serializers.ModelSerializer):
 
     def get_is_dislike(self, post):
         return post.is_dislike(self.context["request"].user)
+
+    def get_num_of_reactions(self, post):
+        return post.get_num_of_reactions()
 
 
 class PostCreateSerializer(serializers.ModelSerializer):
