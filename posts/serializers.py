@@ -65,12 +65,16 @@ class PostCreateSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     writer = UserTinySerializer(read_only=True)
+    replies_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
         exclude = [
             "post",
         ]
+
+    def get_replies_count(self, comment):
+        return comment.replies.count()
 
 
 class ReplySerializer(serializers.ModelSerializer):
