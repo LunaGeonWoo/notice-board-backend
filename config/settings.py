@@ -44,6 +44,7 @@ THIRD_PARTY_APPS = [
 CUSTOM_APPS = [
     "users.apps.UsersConfig",
     "posts.apps.PostsConfig",
+    "comments.apps.CommentsConfig",
 ]
 
 SYSTEM_APPS = [
