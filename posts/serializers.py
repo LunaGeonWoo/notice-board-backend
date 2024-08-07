@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import Post, Comment, Reply
 from users.serializers import UserTinySerializer
+from .models import Post
 
 
 class PostListSerializer(serializers.ModelSerializer):
@@ -60,28 +60,4 @@ class PostCreateSerializer(serializers.ModelSerializer):
             "title",
             "detail",
             "writer",
-        ]
-
-
-class CommentSerializer(serializers.ModelSerializer):
-    writer = UserTinySerializer(read_only=True)
-    replies_count = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Comment
-        exclude = [
-            "post",
-        ]
-
-    def get_replies_count(self, comment):
-        return comment.replies.count()
-
-
-class ReplySerializer(serializers.ModelSerializer):
-    writer = UserTinySerializer(read_only=True)
-
-    class Meta:
-        model = Reply
-        exclude = [
-            "comment",
         ]

@@ -1,6 +1,7 @@
 from django.db import models
 from common.models import CommonModel
 from users.models import User
+from comments.models import Comment
 from django.utils.timezone import now
 
 
@@ -64,50 +65,3 @@ class Post(CommonModel):
     def remove_dislike(self, user):
         self.dislikes.remove(user)
         self.save()
-
-
-class Comment(CommonModel):
-    post = models.ForeignKey(
-        Post,
-        on_delete=models.CASCADE,
-        related_name="comments",
-    )
-    detail = models.TextField()
-    writer = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        verbose_name="작성자",
-    )
-    is_modified = models.BooleanField(
-        default=False,
-        editable=False,
-    )
-
-    def __str__(self) -> str:
-        return f"{self.post}/{self.writer}의 댓글"
-
-
-class Reply(CommonModel):
-    comment = models.ForeignKey(
-        Comment,
-        on_delete=models.CASCADE,
-        verbose_name="답글",
-        related_name="replies",
-    )
-    writer = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        verbose_name="작성자",
-    )
-    detail = models.TextField()
-    is_modified = models.BooleanField(
-        default=False,
-        editable=False,
-    )
-
-    def __str__(self) -> str:
-        return f"{self.comment}/{self.writer}의 답글"
-
-    class Meta:
-        verbose_name = "reply"
-        verbose_name_plural = "replies"
