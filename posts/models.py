@@ -1,7 +1,6 @@
 from django.db import models
 from common.models import CommonModel
 from users.models import User
-from comments.models import Comment
 from django.utils.timezone import now
 
 
