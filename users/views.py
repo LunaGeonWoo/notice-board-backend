@@ -1,3 +1,4 @@
+from django.contrib.auth import logout, login, authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
@@ -100,3 +101,30 @@ class ChangePasswordApiView(generics.UpdateAPIView):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST,
         )
+
+
+class LogInApiView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return Response(
+                {"detail": "Successfully logged in."}, status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                {"detail": "Invalid credentials."}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+class LogOutApiView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        logout(request)
+        return Response({"detail": "Successfully logged out."})
