@@ -1,4 +1,6 @@
 from django.contrib.auth import logout, login, authenticate
+from django.conf import settings
+import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
@@ -128,3 +130,47 @@ class LogOutApiView(APIView):
     def post(self, request):
         logout(request)
         return Response({"detail": "Successfully logged out."})
+
+
+class GithubLogInApiView(APIView):
+
+    def post(self, request):
+        try:
+            code = request.data.get("code")
+            access_token = requests.post(
+                f"https://github.com/login/oauth/access_token?code={code}&client_id=Ov23likdd8EpMimYxktA&client_secret={settings.GITHUB_SECRET}",
+                headers={"Accept": "application/json"},
+            )
+            access_token = access_token.json().get("access_token")
+            user_data = requests.get(
+                "https://api.github.com/user",
+                headers={
+                    "Authorization": f"Bearer {access_token}",
+                    "Accept": "application/json",
+                },
+            )
+            user_data = user_data.json()
+            user_emails = requests.get(
+                "https://api.github.com//user/emails",
+                headers={
+                    "Accept": "application/json",
+                    "Authorization": f"Bearer {access_token}",
+                },
+            )
+            user_emails = user_emails.json()
+            try:
+                user = User.objects.get(email=user_emails[0]["email"])
+                login(request, user)
+            except User.DoesNotExist:
+                user = User.objects.create(
+                    username=user_data.get("login"),
+                    email=user_emails[0]["email"],
+                    name=user_data.get("name"),
+                )
+                user.set_unusable_password()
+                user.save()
+                login(request, user)
+            finally:
+                return Response(status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
