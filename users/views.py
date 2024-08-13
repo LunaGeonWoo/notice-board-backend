@@ -62,13 +62,13 @@ class MeApiView(APIView):
 
         if not user.check_password(password):
             return Response(
-                {"detail": "Password is incorrect."},
+                {"detail": "비밀번호가 틀립니다."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
         user.delete()
         return Response(
-            {"detail": "User deleted successfully."},
+            {"detail": "사용자가 삭제되었습니다."},
             status=status.HTTP_204_NO_CONTENT,
         )
 
@@ -114,11 +114,11 @@ class LogInApiView(APIView):
         if user is not None:
             login(request, user)
             return Response(
-                {"detail": "Successfully logged in."}, status=status.HTTP_200_OK
+                {"detail": "로그인 성공하였습니다."}, status=status.HTTP_200_OK
             )
         else:
             return Response(
-                {"detail": "Invalid credentials."}, status=status.HTTP_400_BAD_REQUEST
+                {"detail": "로그인 실패하였습니다."}, status=status.HTTP_400_BAD_REQUEST
             )
 
 
@@ -127,7 +127,7 @@ class LogOutApiView(APIView):
 
     def post(self, request):
         logout(request)
-        return Response({"detail": "Successfully logged out."})
+        return Response({"detail": "로그아웃 성공하였습니다."})
 
 
 class GithubLogInApiView(APIView):
