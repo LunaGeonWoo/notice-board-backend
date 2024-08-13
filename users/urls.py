@@ -6,6 +6,7 @@ from .views import (
     LogInApiView,
     LogOutApiView,
     GithubLogInApiView,
+    KakaoLogInApiView,
 )
 
 urlpatterns = [
@@ -15,4 +16,5 @@ urlpatterns = [
     path("log-in/", LogInApiView.as_view(), name="log_in"),
     path("log-out/", LogOutApiView.as_view(), name="log_out"),
     path("github/", GithubLogInApiView.as_view(), name="log_out"),
+    path("kakao/", KakaoLogInApiView.as_view(), name="log_out"),
 ]
