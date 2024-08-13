@@ -33,6 +33,8 @@ class PostDetailAPIView(APIView):
 
     def get(self, request, id):
         post = Post.objects.get(id=id)
+        post.views += 1
+        post.save()
         serializer = PostDetailSerializer(post, context={"request": request})
         return Response(serializer.data)
 
