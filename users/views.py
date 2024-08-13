@@ -138,7 +138,12 @@ class GithubLogInApiView(APIView):
         try:
             code = request.data.get("code")
             access_token = requests.post(
-                f"https://github.com/login/oauth/access_token?code={code}&client_id=Ov23likdd8EpMimYxktA&client_secret={settings.GITHUB_SECRET}",
+                "https://github.com/login/oauth/access_token",
+                params={
+                    "code": code,
+                    "client_id": "Ov23likdd8EpMimYxktA",
+                    "client_secret": settings.GITHUB_SECRET,
+                },
                 headers={"Accept": "application/json"},
             )
             access_token = access_token.json().get("access_token")
